@@ -1,0 +1,24 @@
+---
+# tasks file for nginx
+- name: Install nginx service
+  become: true
+  ansible.builtin.yum:
+    name:
+      - epel-release
+      - nginx
+    state: present
+- name: Copy nginx config
+  become: true
+  ansible.builtin.copy:
+    src: test.conf
+    dest: /etc/nginx/conf.d
+    mode: 0644
+    remote_src: no
+  notify: Restart nginx service
+- name: Start nginx
+  become: true
+  ansible.builtin.systemd:
+    name: nginx
+    enabled: true
+    state: started
+    daemon-reload: true
